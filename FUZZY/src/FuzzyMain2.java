@@ -9,28 +9,29 @@ public class FuzzyMain2 {
         // Configuração das variáveis fuzzy
         GrupoVariaveis grupoVoteAverage = new GrupoVariaveis();
         grupoVoteAverage.add(new VariavelFuzzy("Nota Baixa", 0, 0, 5, 5));
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Média", 5, 5, 7.5f, 7.5f));
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Alta", 7.5f, 7.5f, 9, 9));
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Fenomenal", 9, 9, 10, 10));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Média", 4, 5, 6, 7.5f));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Alta", 7, 7.5f, 8.5f, 9));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Fenomenal", 8.5f, 9, 10, 10));
 
         GrupoVariaveis grupoVoteCount = new GrupoVariaveis();
         grupoVoteCount.add(new VariavelFuzzy("Poucos Votos", 0, 0, 1000, 1000));
-        grupoVoteCount.add(new VariavelFuzzy("Média de Votos", 1000, 1000, 10000, 10000));
-        grupoVoteCount.add(new VariavelFuzzy("Muitos Votos", 10000, 10000, 15000, 15000));
+        grupoVoteCount.add(new VariavelFuzzy("Média de Votos", 800, 1000, 9000, 10000));
+        grupoVoteCount.add(new VariavelFuzzy("Muitos Votos", 9500, 11000, 15000, 15000));
 
         GrupoVariaveis grupoRuntime = new GrupoVariaveis();
         grupoRuntime.add(new VariavelFuzzy("Curto", 0, 0, 80, 80));
-        grupoRuntime.add(new VariavelFuzzy("Médio", 80, 80, 100, 100));
-        grupoRuntime.add(new VariavelFuzzy("Longo", 100, 100, 120, 120));
-        grupoRuntime.add(new VariavelFuzzy("Muito Longo", 120, 120, 200, 200));
+        grupoRuntime.add(new VariavelFuzzy("Médio", 70, 80, 90, 100));
+        grupoRuntime.add(new VariavelFuzzy("Longo", 90, 110, 115, 120));
+        grupoRuntime.add(new VariavelFuzzy("Muito Longo", 116, 120, 200, 200));
 
         GrupoVariaveis grupoReleaseDate = new GrupoVariaveis();
-        grupoReleaseDate.add(new VariavelFuzzy("Antigo", 0, 0, 1995, 1995));
-        grupoReleaseDate.add(new VariavelFuzzy("Recente", 1995, 1995, 2015, 2015));
-        grupoReleaseDate.add(new VariavelFuzzy("Muito Recente", 2015, 2015, 2025, 2025));
+        grupoReleaseDate.add(new VariavelFuzzy("Antigo", 0, 0, 1991, 1995));
+        grupoReleaseDate.add(new VariavelFuzzy("Menos Antigo", 1994, 1998, 2000, 2002));
+        grupoReleaseDate.add(new VariavelFuzzy("Recente", 2001, 2004, 2009, 2015));
+        grupoReleaseDate.add(new VariavelFuzzy("Muito Recente", 2013, 2016, 2025, 2025));
 
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(new File("C:\\Users\\Usuario\\Documents\\GitHub\\Projeto-FUZZY-IA\\FUZZY\\movie_dataset.csv")));
+            BufferedReader bfr = new BufferedReader(new FileReader(new File("movie_dataset.csv")));
             String header = bfr.readLine(); // Lê o cabeçalho
             System.out.println("Header: " + header);
 
