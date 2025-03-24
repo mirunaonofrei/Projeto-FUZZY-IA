@@ -62,36 +62,45 @@ public class FuzzyMain {
                 grupoRuntime.fuzzifica(runtime, asVariaveis);
                 grupoReleaseDate.fuzzifica(releaseYear, asVariaveis);
 
-                rodaRegraE(asVariaveis, "Nota Média", "Recente", "Recomendado");
-                rodaRegraE(asVariaveis, "Nota Alta", "Muito Relevante", "Excelente");
                 rodaRegraE(asVariaveis, "Nota Fenomenal", "Muitos Votos", "Excelente");
-                rodaRegraE(asVariaveis, "Nota Média", "Muitos Votos", "Recomendado");
+                rodaRegraE(asVariaveis, "Nota Fenomenal", "Muito Relevante", "Excelente");
+                rodaRegraE(asVariaveis, "Nota Alta", "Muito Relevante", "Excelente");
                 rodaRegraE(asVariaveis, "Nota Alta", "Relevante", "Excelente");
-                rodaRegraE(asVariaveis, "Nota Média", "Relevante", "Recomendado");
-                rodaRegraE(asVariaveis, "Nota Média", "Muito Relevante", "Recomendado");
+
                 rodaRegraE(asVariaveis, "Nota Alta", "Excelente", "Muito Recomendado");
                 rodaRegraE(asVariaveis, "Nota Fenomenal", "Excelente", "Muito Recomendado");
-                rodaRegraE(asVariaveis, "Nota Média", "Excelente", "Interessante");
-                rodaRegraE(asVariaveis, "Recente", "Muitos Votos", "Muito Recomendado");
-                rodaRegraE(asVariaveis, "Nota Alta", "Muito Longo", "Excelente");
-                rodaRegraE(asVariaveis, "Nota Fenomenal", "Recente", "Excelente");
-                rodaRegraE(asVariaveis, "Menos Antigo", "Razoável", "Interessante");
+
+                rodaRegraE(asVariaveis, "Nota Média", "Recente", "Recomendado");
+                rodaRegraE(asVariaveis, "Nota Média", "Muitos Votos", "Recomendado");
+                rodaRegraE(asVariaveis, "Nota Média", "Relevante", "Recomendado");
+                rodaRegraE(asVariaveis, "Nota Média", "Muito Relevante", "Recomendado");
                 rodaRegraE(asVariaveis, "Nota Alta", "Razoável", "Recomendado");
-                rodaRegraE(asVariaveis, "Nota Alta", "Recente", "Excelente");
+
+                rodaRegraE(asVariaveis, "Nota Média", "Excelente", "Interessante");
+                rodaRegraE(asVariaveis, "Menos Antigo", "Razoável", "Interessante");
                 rodaRegraE(asVariaveis, "Médio", "Relevante", "Interessante");
-                rodaRegraE(asVariaveis, "Nota Alta", "Muito Longo", "Excelente");
-                rodaRegraE(asVariaveis, "Nota Baixa", "Curto", "Não Recomendado");
                 rodaRegraE(asVariaveis, "Recente", "Média de Votos", "Interessante");
-                rodaRegraE(asVariaveis, "Nota Alta", "Ação", "Recomendado");
-                rodaRegraE(asVariaveis, "Antigo", "Média de Votos", "Razoável");
 
                 float recomendado = asVariaveis.getOrDefault("Recomendado", 0.0f);
                 float excelente = asVariaveis.getOrDefault("Excelente", 0.0f);
                 float muitoRelevante = asVariaveis.getOrDefault("Muito Recomendado", 0.0f);
                 float interessante = asVariaveis.getOrDefault("Interessante", 0.0f);
+                float notaBaixa = asVariaveis.getOrDefault("Nota Baixa", 0.0f);
+                float poucosVotos = asVariaveis.getOrDefault("Poucos Votos", 0.0f);
+                float antigo = asVariaveis.getOrDefault("Antigo", 0.0f);
+                float muitoLongo = asVariaveis.getOrDefault("Muito Longo", 0.0f);
+                float pessimo = asVariaveis.getOrDefault("Péssimo", 0.0f);
+                float poucoRelevante = asVariaveis.getOrDefault("Pouco Relevante", 0.0f);
+
+                float penalizacao = 1.0f;
+                if (notaBaixa == 1.0f || poucosVotos == 1.0f || antigo == 1.0f || muitoLongo == 1.0f || pessimo == 1.0f || poucoRelevante == 1.0f) {
+                    penalizacao = 0.5f;
+                }
 
                 float score = (recomendado * 3 + excelente * 10 + muitoRelevante * 5 + interessante * 2) /
                         (recomendado + excelente + muitoRelevante + interessante + 1e-6f);
+
+                score *= penalizacao;
 
                 movieScores.add(new MovieScore(title, score, asVariaveis));
 
