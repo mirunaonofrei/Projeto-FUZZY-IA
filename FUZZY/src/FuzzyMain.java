@@ -70,14 +70,27 @@ public class FuzzyMain {
                 rodaRegraE(asVariaveis, "Nota Média", "Relevante", "Recomendado");
                 rodaRegraE(asVariaveis, "Nota Média", "Muito Relevante", "Recomendado");
                 rodaRegraE(asVariaveis, "Nota Alta", "Excelente", "Muito Recomendado");
-                rodaRegraE(asVariaveis, "Nota Baixa", "Pouco Relevante", "Não Recomendado");
+                rodaRegraE(asVariaveis, "Nota Fenomenal", "Excelente", "Muito Recomendado");
+                rodaRegraE(asVariaveis, "Nota Média", "Excelente", "Interessante");
+                rodaRegraE(asVariaveis, "Recente", "Muitos Votos", "Muito Recomendado");
+                rodaRegraE(asVariaveis, "Nota Alta", "Muito Longo", "Excelente");
+                rodaRegraE(asVariaveis, "Nota Fenomenal", "Recente", "Excelente");
+                rodaRegraE(asVariaveis, "Menos Antigo", "Razoável", "Interessante");
+                rodaRegraE(asVariaveis, "Nota Alta", "Razoável", "Recomendado");
+                rodaRegraE(asVariaveis, "Nota Alta", "Recente", "Excelente");
+                rodaRegraE(asVariaveis, "Médio", "Relevante", "Interessante");
+                rodaRegraE(asVariaveis, "Nota Alta", "Muito Longo", "Excelente");
+                rodaRegraE(asVariaveis, "Nota Baixa", "Curto", "Não Recomendado");
+                rodaRegraE(asVariaveis, "Recente", "Média de Votos", "Interessante");
+                rodaRegraE(asVariaveis, "Nota Alta", "Ação", "Recomendado");
+                rodaRegraE(asVariaveis, "Antigo", "Média de Votos", "Razoável");
 
                 float recomendado = asVariaveis.getOrDefault("Recomendado", 0.0f);
                 float excelente = asVariaveis.getOrDefault("Excelente", 0.0f);
-                float muitoRelevante = asVariaveis.getOrDefault("Muito Relevante", 0.0f);
+                float muitoRelevante = asVariaveis.getOrDefault("Muito Recomendado", 0.0f);
                 float interessante = asVariaveis.getOrDefault("Interessante", 0.0f);
 
-                float score = (recomendado * 5 + excelente * 10 + muitoRelevante * 3 + interessante * 2) /
+                float score = (recomendado * 3 + excelente * 10 + muitoRelevante * 5 + interessante * 2) /
                         (recomendado + excelente + muitoRelevante + interessante + 1e-6f);
 
                 movieScores.add(new MovieScore(title, score, asVariaveis));
