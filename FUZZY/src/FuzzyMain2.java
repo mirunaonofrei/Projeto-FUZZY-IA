@@ -2,6 +2,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class FuzzyMain2 {
@@ -31,19 +34,19 @@ public class FuzzyMain2 {
         grupoReleaseDate.add(new VariavelFuzzy("Muito Recente", 2013, 2016, 2025, 2025));
 
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(new File("movie_dataset.csv")));
+            BufferedReader bfr = new BufferedReader(new FileReader(new File("C:\\Users\\Usuario\\Documents\\GitHub\\Projeto-FUZZY-IA\\FUZZY\\movie_dataset.csv")));
             String header = bfr.readLine(); // Lê o cabeçalho
             System.out.println("Header: " + header);
 
             String line;
-            int movieCount = 0; // Limitar a 10 filmes para debugging
-            while ((line = bfr.readLine()) != null && movieCount < 10) {
+            ArrayList<MovieScore> movieScores = new ArrayList<>();
+
+            while ((line = bfr.readLine()) != null) {
                 String[] spl = parseCSVLine(line); // Processa a linha corretamente
                 HashMap<String, Float> asVariaveis = new HashMap<>();
 
                 // Verificar se há colunas suficientes
                 if (spl.length < 19) {
-                    System.out.println("Linha mal formatada ou com colunas ausentes: " + String.join(",", spl));
                     continue;
                 }
 
@@ -77,15 +80,21 @@ public class FuzzyMain2 {
                 float score = (recomendado * 5 + excelente * 10 + muitoRelevante * 3) /
                         (recomendado + excelente + muitoRelevante + 1e-6f);
 
-                // Debugging para verificar variáveis fuzzy
-                System.out.println("Filme: " + title);
-                System.out.println("Score Final: " + score);
-                System.out.println("Valores Fuzzy: " + asVariaveis);
-                System.out.println("------------------------------");
-
-                //movieCount++; // Incrementa o contador
+                // Adiciona o filme e seu score à lista
+                movieScores.add(new MovieScore(title, score));
             }
             bfr.close();
+
+            // Ordena os filmes pelo score em ordem decrescente
+            Collections.sort(movieScores, Comparator.comparingDouble(MovieScore::getScore).reversed());
+
+            // Exibe os filmes ordenados
+            for (MovieScore movie : movieScores) {
+                System.out.println("Filme: " + movie.getTitle());
+                System.out.println("Score Final: " + movie.getScore());
+                System.out.println("------------------------------");
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,5 +133,24 @@ public class FuzzyMain2 {
 
     private static String[] parseCSVLine(String line) {
         return line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+    }
+
+    // Classe auxiliar para armazenar título e score
+    static class MovieScore {
+        private final String title;
+        private final double score;
+
+        public MovieScore(String title, double score) {
+            this.title = title;
+            this.score = score;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public double getScore() {
+            return score;
+        }
     }
 }
