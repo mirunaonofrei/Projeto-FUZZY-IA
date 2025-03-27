@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,10 +12,10 @@ public class FuzzyMain {
     public static void main(String[] args) {
         // Grupos de variáveis fuzzy para diferentes características
         GrupoVariaveis grupoVoteAverage = new GrupoVariaveis();
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Baixa", 0, 0, 5, 5));
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Média", 4, 5, 6, 7.5f));
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Alta", 7, 7.5f, 8.5f, 9));
-        grupoVoteAverage.add(new VariavelFuzzy("Nota Fenomenal", 8.5f, 9, 10, 10));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Baixa", 0, 0, 4.5f, 5));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Média", 4.3f, 5, 5.5f, 7.5f));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Alta", 6.5f, 8f, 8.5f, 9));
+        grupoVoteAverage.add(new VariavelFuzzy("Nota Fenomenal", 8.3f, 9.3f, 10, 10));
 
         GrupoVariaveis grupoVoteCount = new GrupoVariaveis();
         grupoVoteCount.add(new VariavelFuzzy("Poucos Votos", 0, 0, 1000, 1000));
@@ -22,10 +23,10 @@ public class FuzzyMain {
         grupoVoteCount.add(new VariavelFuzzy("Muitos Votos", 9500, 11000, 15000, 15000));
 
         GrupoVariaveis grupoRuntime = new GrupoVariaveis();
-        grupoRuntime.add(new VariavelFuzzy("Curto", 0, 0, 80, 80));
-        grupoRuntime.add(new VariavelFuzzy("Médio", 70, 80, 90, 100));
+        grupoRuntime.add(new VariavelFuzzy("Curto", 0, 0, 77, 80));
+        grupoRuntime.add(new VariavelFuzzy("Médio", 75, 85, 95, 100));
         grupoRuntime.add(new VariavelFuzzy("Longo", 90, 110, 115, 120));
-        grupoRuntime.add(new VariavelFuzzy("Muito Longo", 116, 120, 200, 200));
+        grupoRuntime.add(new VariavelFuzzy("Muito Longo", 114, 120, 200, 200));
 
         GrupoVariaveis grupoReleaseDate = new GrupoVariaveis();
         grupoReleaseDate.add(new VariavelFuzzy("Antigo", 0, 0, 1991, 1995));
@@ -64,7 +65,6 @@ public class FuzzyMain {
                 grupoRuntime.fuzzifica(runtime, asVariaveis);
                 grupoReleaseDate.fuzzifica(releaseYear, asVariaveis);
 
-                // Regras de fuzzy para promover filmes de alta qualidade
                 rodaRegra(asVariaveis, "Nota Fenomenal", "Muitos Votos", "Excelente", "E");
                 rodaRegra(asVariaveis, "Nota Fenomenal", "Muito Relevante", "Excelente", "E");
                 rodaRegra(asVariaveis, "Nota Alta", "Muito Relevante", "Excelente", "E");
@@ -81,14 +81,15 @@ public class FuzzyMain {
                 rodaRegra(asVariaveis, "Médio", "Relevante", "Interessante", "E");
                 rodaRegra(asVariaveis, "Recente", "Média de Votos", "Interessante", "E");
 
-                // Exemplo de regras com "OU"
+                //regras com "OU"
                 rodaRegra(asVariaveis, "Nota Alta", "Nota Fenomenal", "Excelente", "OU");
                 rodaRegra(asVariaveis, "Muitos Votos", "Muito Relevante", "Muito Recomendado", "OU");
 
-                // Exemplo de regras com "NOT"
+                //regras com "NOT"
                 rodaRegra(asVariaveis, "Nota Baixa", "Nota Média", "Interessante", "NOT");
                 rodaRegra(asVariaveis, "Antigo", "Recente", "Interessante", "NOT");
-                // Penalizações para filmes com notas baixas ou outros fatores negativos
+
+                // Penalizações
                 float penalizacao = 1.0f;
                 if (asVariaveis.getOrDefault("Nota Baixa", 0.0f) == 1.0f ||
                         asVariaveis.getOrDefault("Poucos Votos", 0.0f) == 1.0f ||
@@ -108,14 +109,22 @@ public class FuzzyMain {
             // Ordenar filmes por score
             Collections.sort(movieScores, Comparator.comparingDouble(MovieScore::getScore).reversed());
 
-            // Mostrar os top filmes
-            int topMoviesCount = Math.min(10, movieScores.size());
+            // Mostrar os top 10 filmes
+            /*int topMoviesCount = Math.min(10, movieScores.size());
             for (int i = 0; i < topMoviesCount; i++) {
                 MovieScore movie = movieScores.get(i);
                 System.out.println("Filme: " + movie.getTitle());
-                System.out.println("Score Final: " + movie.getScore());
+                DecimalFormat df = new DecimalFormat("#.###");
+                System.out.println("Score Final: " + df.format(movie.getScore()));
+                System.out.println("------------------------------");
+            }*/
+            for (MovieScore movie : movieScores) { 
+                System.out.println("Filme: " + movie.getTitle());
+                DecimalFormat df = new DecimalFormat("#.###");
+                System.out.println("Score Final: " + df.format(movie.getScore()));
                 System.out.println("------------------------------");
             }
+            
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,12 +135,12 @@ public class FuzzyMain {
     private static void fuzzificaGenero(String genres, HashMap<String, Float> asVariaveis) {
         String[] genreList = genres.split(" ");
         for (String genre : genreList) {
-            if ("animation superhero romance drama".contains(genre)) {
-                asVariaveis.put("Excelente", 1.0f); // Gêneros preferidos recebem o maior peso
+            if ("animation superhero romance".contains(genre)) {
+                asVariaveis.put("Excelente", 1.0f); 
             } else if ("family comedy".contains(genre)) {
-                asVariaveis.put("Relevante", 0.8f); // Gêneros como comédia e família têm um peso alto
+                asVariaveis.put("Relevante", 0.8f); 
             } else if ("action drama horror thriller".contains(genre)) {
-                asVariaveis.put("Razoável", 0.5f); // Gêneros como ação e drama recebem peso moderado
+                asVariaveis.put("Razoável", 0.5f); 
             }
         }
     }
@@ -140,15 +149,15 @@ public class FuzzyMain {
     private static void fuzzificaKeywords(String keywords, HashMap<String, Float> asVariaveis) {
         String[] keywordList = keywords.split(" ");
         for (String keyword : keywordList) {
-            if ("hero love space adventure dream animation superhero".contains(keyword)) {
-                asVariaveis.put("Muito Relevante", 1.0f); // Palavras-chave associadas a heróis e romance
+            if ("hero love space adventure dream".contains(keyword)) {
+                asVariaveis.put("Muito Relevante", 1.0f);
             } else if ("comedy life mystery".contains(keyword)) {
-                asVariaveis.put("Relevante", 0.8f); // Palavras-chave como comédia e vida têm peso alto
+                asVariaveis.put("Relevante", 0.8f); 
             }
         }
     }
 
-    // Regra de fuzzy para combinar variáveis com E, OU ou NOT
+    // Regra de fuzzy E, OU ou NOT
     private static void rodaRegra(HashMap<String, Float> asVariaveis, String var1, String var2, String varr,
             String operacao) {
         float v1 = asVariaveis.getOrDefault(var1, 0.0f);
@@ -175,20 +184,14 @@ public class FuzzyMain {
     }
 
     // Cálculo do score baseado nas variáveis fuzzy
-    // Cálculo do score baseado nas variáveis fuzzy
     private static float calculaScore(HashMap<String, Float> asVariaveis) {
-        // Recupera o valor das variáveis fuzzy
         float recomendado = asVariaveis.getOrDefault("Recomendado", 0.0f);
         float excelente = asVariaveis.getOrDefault("Excelente", 0.0f);
         float muitoRelevante = asVariaveis.getOrDefault("Muito Relevante", 0.0f);
         float interessante = asVariaveis.getOrDefault("Interessante", 0.0f);
 
-        // Fórmula ajustada com pesos mais impactantes
-        // Damos maior peso para "Excelente" e "Muito Relevante"
-        float score = (recomendado * 2 + excelente * 14 + muitoRelevante * 7 + interessante * 3) /
-                (recomendado + excelente + muitoRelevante + interessante + 1e-6f);
-
-        return score;
+        // Cálculo do score final
+        return (recomendado * 1.5f + excelente * 4.5f + muitoRelevante * 3 + interessante * 1);
     }
 
     // Função para parsear a linha CSV
